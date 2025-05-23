@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+import "encoding/json"
 
 type Param map[string]interface{}
 
@@ -21,6 +22,10 @@ func zhoujielun(v interface{}) {
 	}
 }
 
+type People struct {
+	Name string `json:"name"`
+}
+
 func main() {
 	s := Show{
 		Param: map[string]interface{}{
@@ -38,4 +43,15 @@ func main() {
 
 	zhoujielun(student{Name: "zhoujielun"})
 	zhoujielun(&student{Name: "zhoujielun"})
+
+	js := `{
+		"name":"11"
+	}`
+	var p People
+	err := json.Unmarshal([]byte(js), &p)
+	if err != nil {
+		fmt.Println("err: ", err)
+		return
+	}
+	fmt.Println("people: ", p)
 }
