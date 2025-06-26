@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"sync"
+	"time"
+)
 
 type Param map[string]interface{}
 
@@ -30,6 +34,35 @@ func (p *People) String() string {
 	//return fmt.Sprintf("print: %v", p) // %v will invoke the String method of (*People)
 	return fmt.Sprintf("print: %v", *p) // *p convert *People to People, then the interface func (p *People) String() will NOT be invoked
 	//return fmt.Sprintf("String method: Name=%s", p.Name)
+}
+
+func wyou_sleep() {
+	ch := make(chan int, 1000)
+	var wg sync.WaitGroup
+
+	// Start sender
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 10; i++ {
+			ch <- i
+		}
+		// Close channel after sending all values
+		close(ch)
+	}()
+
+	// Start receiver
+	go func() {
+		for a := range ch {
+			fmt.Println("a: ", a)
+		}
+		fmt.Println("channel closed")
+	}()
+
+	// Wait for sender to finish and close channel
+	wg.Wait()
+	fmt.Println("ok")
+	time.Sleep(time.Second * 1)
 }
 
 func main() {
@@ -61,5 +94,7 @@ func main() {
 	}
 	fmt.Printf("people: %s", p.Name)
 	fmt.Printf("people: %v", p)
-	fmt.Println(p.String()) 
+	fmt.Println(p.String())
+
+	wyou_sleep()
 }
