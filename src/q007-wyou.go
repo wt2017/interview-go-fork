@@ -26,6 +26,12 @@ type People struct {
 	Name string `json:"name"`
 }
 
+func (p *People) String() string {
+	//return fmt.Sprintf("print: %v", p) // %v will invoke the String method of (*People)
+	return fmt.Sprintf("print: %v", *p) // *p convert *People to People, then the interface func (p *People) String() will NOT be invoked
+	//return fmt.Sprintf("String method: Name=%s", p.Name)
+}
+
 func main() {
 	s := Show{
 		Param: map[string]interface{}{
@@ -44,14 +50,16 @@ func main() {
 	zhoujielun(student{Name: "zhoujielun"})
 	zhoujielun(&student{Name: "zhoujielun"})
 
+	var p People
 	js := `{
 		"name":"11"
 	}`
-	var p People
 	err := json.Unmarshal([]byte(js), &p)
 	if err != nil {
 		fmt.Println("err: ", err)
 		return
 	}
-	fmt.Println("people: ", p)
+	fmt.Printf("people: %s", p.Name)
+	fmt.Printf("people: %v", p)
+	fmt.Println(p.String()) 
 }
